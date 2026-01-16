@@ -13,7 +13,9 @@ create table editorial (
 create table llibre (
    id           number generated as identity primary key,
    titol        varchar2(50) not null,
-   an           number,
+   an           number check ( an <= 2023 ),
+   unique ( titol,
+            an ),
    exemplars    number,
    id_editorial number not null,
    id_sequela   number,
@@ -21,10 +23,8 @@ create table llibre (
       references editorial ( id ),
    foreign key ( id_sequela )
       references llibre ( id ),
-   constraint aignacio_ann_titol unique ( titol,
-                                          an ),
-   constraint max_ann check ( an <= 2023 ),
-   constraint max_exemplars check ( exemplars <= 2023 )
+   constraint   max_ann
+      constraint max_exemplars check ( exemplars <= 2023 )
 );
 
 
@@ -51,7 +51,7 @@ create table autor_llibre (
 );
 
 create table genere (
-   nom varchar2(50) not null primary key
+   nom varchar2(50) primary key
 );
 
 create table llibre_genere (
