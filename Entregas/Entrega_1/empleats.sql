@@ -1,3 +1,15 @@
+BEGIN
+   FOR t IN (
+      SELECT table_name
+      FROM user_tables
+      WHERE table_name IN ('NOMINA', 'OCUPA', 'EMPLEAT', 'PLAZA', 'TIPUSDEPLACA')
+   ) LOOP
+      EXECUTE IMMEDIATE 'DROP TABLE ' || t.table_name || ' CASCADE CONSTRAINTS';
+   END LOOP;
+END;
+
+/ 
+
 create table tipusdeplaca (
    nom    varchar2(100) primary key,
    funcio varchar2(100) not null
@@ -6,12 +18,12 @@ create table plaza (
    codi                   number generated as identity primary key,
    nom                    varchar2(100) not null,
    salari                 float not null,
-   codi_plaza_supervisora number,
-   informe_supervisio     varchar2(100),
-   nom_tipus_de_plaza     varchar2(100) not null,
-   foreign key ( codiplazasupervisora )
+   codiplacasupervisora number,
+   informesupervisio     varchar2(100),
+   tipusdeplaca     varchar2(100) not null,
+   foreign key ( codiplacasupervisora )
       references plaza ( codi ),
-   foreign key ( nomtipusdeplaca )
+   foreign key ( tipusdeplaca )
       references tipusdeplaca ( nom )
 );
 
@@ -37,12 +49,13 @@ create table ocupa (
 );
 create table nomina (
    id           number generated as identity primary key,
-   ibanpagament number not null,
+   ibanpagament varchar2(100) not null,
    importnomina number not null,
    nssempleat   number not null,
-   codiplaza    number not null,
+   codiplaca    number not null,
       foreign key ( nssempleat,
                     codiplaca )
          references ocupa ( nssempleat,
                             codiplaca )
 );
+
